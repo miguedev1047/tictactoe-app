@@ -1,3 +1,23 @@
-import { user, account, session, verification } from './schemas/auth'
+import {
+  boardRelations,
+  gamePlayerRelations,
+  gameRelations,
+} from '@/server/db/schemas/_relations'
 
-export { user, account, session, verification }
+import { user, account, session, verification } from '@/server/db/schemas/auth'
+import { boards } from '@/server/db/schemas/boards'
+import { games } from '@/server/db/schemas/games'
+import { gamePlayers } from '@/server/db/schemas/game-players'
+
+export {
+  user,
+  account,
+  session,
+  verification,
+  boards,
+  games,
+  gamePlayers,
+  boardRelations,
+  gamePlayerRelations,
+  gameRelations,
+}

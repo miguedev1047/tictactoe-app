@@ -35,7 +35,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TRPCReactProvider>{children}</TRPCReactProvider>
-          <Toaster />
+          <Toaster position='top-center' />
         </ThemeProvider>
       </body>
     </html>

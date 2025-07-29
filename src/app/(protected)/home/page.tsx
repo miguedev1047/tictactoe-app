@@ -1,10 +1,22 @@
 import { SignOutButton } from '@/components/signout'
+import { NewGame } from '@/app/(protected)/home/_components/new-game'
+import { api, HydrateClient } from '@/trpc/server'
 
-export default function HomePage() {
+export const dynamic = 'force-dynamic'
+
+export default async function HomePage() {
+  void api.session.currentUser.prefetch()
+
   return (
-    <div className='p-8 space-y-4'>
-      <h2>Home Page</h2>
-      <SignOutButton />
-    </div>
+    <HydrateClient>
+      <div className='p-8 space-y-8'>
+        <div className='space-y-2'>
+          <h2>Home Page</h2>
+          <SignOutButton />
+        </div>
+
+        <NewGame />
+      </div>
+    </HydrateClient>
   )
 }

@@ -8,18 +8,14 @@
 # testing
 /coverage
 
-# database
-/prisma/db.sqlite
-/prisma/db.sqlite-journal
-db.sqlite
-
 # next.js
-/.next/
-/out/
-next-env.d.ts
+apps/web/.next/
+apps/web/out/
+apps/web/next-env.d.ts
+.turbo
 
 # production
-/build
+apps/web/build
 
 # misc
 .DS_Store

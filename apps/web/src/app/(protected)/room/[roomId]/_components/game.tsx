@@ -9,12 +9,7 @@ import { CopyGameLink } from '@/components/copy-game-link'
 export function Game() {
   const { roomId } = useParams<{ roomId: string }>()
 
-  const [gameInfo] = api.games.gameByRoom.useSuspenseQuery(
-    { roomId },
-    {
-      refetchInterval: 1500,
-    }
-  )
+  const [gameInfo] = api.games.gameByRoom.useSuspenseQuery({ roomId })
 
   if (!gameInfo) {
     return <h3>Loading...</h3>

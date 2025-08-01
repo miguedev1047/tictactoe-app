@@ -22,6 +22,41 @@
       "when": 1753760511444,
       "tag": "0002_thin_magik",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1754003206875,
+      "tag": "0003_nappy_iron_monger",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1754003904722,
+      "tag": "0004_shocking_thena",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1754004174568,
+      "tag": "0005_late_meteorite",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1754006642416,
+      "tag": "0006_icy_doctor_spectrum",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1754007044015,
+      "tag": "0007_blue_sentinels",
+      "breakpoints": true
     }
   ]
 }

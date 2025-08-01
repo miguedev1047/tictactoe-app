@@ -17,6 +17,17 @@ export const boardSchema = z.object({
   gameTurn: z.enum(['X', 'O']),
 })
 
+export const startGameSchema = z.object({
+  gameId: z.string().nullable(),
+  status: z.enum(['waiting', 'in_progress', 'finished']),
+})
+
+export const finishGameSchema = z.object({
+  gameId: z.string(),
+  winner: z.enum(['X', 'O', 'draw']),
+  status: z.enum(['finished']),
+})
+
 export const joinGameSchema = z.object({
   id: z.string(),
   gameId: z.string().nullable(),
@@ -30,5 +41,3 @@ export const joinGameSchema = z.object({
 export const gameRoom = z.object({
   roomId: z.string(),
 })
-
-

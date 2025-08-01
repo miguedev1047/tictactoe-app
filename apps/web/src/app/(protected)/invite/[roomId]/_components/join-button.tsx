@@ -3,6 +3,7 @@
 import { Badge } from '@/components/ui/8bit/badge'
 import { Button } from '@/components/ui/8bit/button'
 import { toast } from '@/components/ui/8bit/toast'
+import { useGame } from '@/providers/room-provider'
 import { api } from '@/trpc/react'
 import { useParams, useRouter } from 'next/navigation'
 
@@ -11,21 +12,17 @@ export function JoinButton() {
 
   const { roomId } = useParams<{ roomId: string }>()
   const [currentUser] = api.session.currentUser.useSuspenseQuery()
-  const [gameInfo] = api.games.gameByRoom.useSuspenseQuery({ roomId })
+  const { room, status } = useGame()
 
-  const playerTwoId = gameInfo?.gamePlayers[1]?.userId
+  const playerTwoId = room?.gamePlayers[1]?.userId
 
-  const gameOwnerId = gameInfo?.owner?.id
+  const gameOwnerId = room?.ownerId
   const invitedUserId = currentUser.id
 
   const isSameOwnId = invitedUserId === gameOwnerId
   const isSameInvitedId = playerTwoId === gameOwnerId
 
-  const utils = api.useUtils()
-  const mutation = api.games.joinGame.useMutation({
-    onSettled: async () => {
-      await utils.games.gameByRoom.invalidate({ roomId })
-    },
+  const mutation = api.realtime.joinGame.useMutation({
     onSuccess: () => {
       toast('Game joined!')
       return router.push(`/room/${roomId}`)
@@ -60,15 +57,14 @@ export function JoinButton() {
   return (
     <div className='space-y-6'>
       <div className='flex flex-wrap items-center gap-x-6 gap-y-4'>
-        <Badge>Status: {gameInfo?.status}</Badge>
-        <Badge>Owner: {gameInfo?.owner?.name}</Badge>
+        <Badge>Status: {room?.status}</Badge>
       </div>
 
       <Button
         onClick={handleJoin}
-        disabled={isSameOwnId || isSameInvitedId}
+        disabled={isSameOwnId || isSameInvitedId || status === 'connecting'}
       >
-        Join Game
+        {status === 'connecting' ? 'Connecting...' : 'Join Game'}
       </Button>
     </div>
   )

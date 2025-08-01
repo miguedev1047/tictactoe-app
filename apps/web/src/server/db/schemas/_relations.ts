@@ -31,3 +31,8 @@ export const gamePlayerRelations = relations(gamePlayers, ({ one }) => ({
     references: [user.id],
   }),
 }))
+
+export const userRelations = relations(user, ({ many }) => ({
+  games: many(games),
+  gamePlayers: many(gamePlayers),
+}))

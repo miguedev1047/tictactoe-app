@@ -2,6 +2,7 @@ import {
   boardRelations,
   gamePlayerRelations,
   gameRelations,
+  userRelations,
 } from '@/server/db/schemas/_relations'
 
 import { user, account, session, verification } from '@/server/db/schemas/auth'
@@ -20,4 +21,5 @@ export {
   boardRelations,
   gamePlayerRelations,
   gameRelations,
+  userRelations
 }

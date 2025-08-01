@@ -1,5 +1,7 @@
 import { api, HydrateClient } from '@/trpc/server'
-import { Game } from './_components/game'
+import { ProfileCard } from '@/components/profile-card'
+import { GameRealtime } from './_components/game-realtime'
+import { RoomProvider } from '@/providers/room-provider'
 
 export default async function RoomPage({
   params,
@@ -7,12 +9,15 @@ export default async function RoomPage({
   params: Promise<{ roomId: string }>
 }) {
   const { roomId } = await params
-  void api.games.gameByRoom.prefetch({ roomId })
+  void api.session.currentUser.prefetch()
 
   return (
     <HydrateClient>
-      <div className='p-8 space-y-8'>
-        <Game/>
+      <div className='p-8 space-y-16 inline-flex flex-col'>
+        <RoomProvider roomId={roomId}>
+          <ProfileCard />
+          <GameRealtime />
+        </RoomProvider>
       </div>
     </HydrateClient>
   )

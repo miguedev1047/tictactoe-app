@@ -1,0 +1,1 @@
+ALTER TABLE `user_game_info` RENAME COLUMN "turn" TO "symbol";

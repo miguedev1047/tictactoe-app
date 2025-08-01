@@ -1,6 +1,12 @@
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc'
-import { boards, gamePlayers, games } from '@/server/db/schema'
-import { boardSchema, gameRoom, gameSchema, joinGameSchema } from '@/server/zod'
+import { boards, gamePlayers, games, user } from '@/server/db/schema'
+import {
+  boardSchema,
+  gameRoom,
+  gameSchema,
+  joinGameSchema,
+  startGameSchema,
+} from '@/server/zod'
 import { TRPCError } from '@trpc/server'
 import { and, asc, eq } from 'drizzle-orm'
 
@@ -11,6 +17,7 @@ export const gamesRouter = createTRPCRouter({
     .input(gameSchema)
     .mutation(async ({ ctx, input }) => {
       const { gameTurn, id, name, ownerId, status, winner } = input
+      const userId = ctx.session.user.id
 
       // First create game room
       await ctx.db.insert(games).values({
@@ -33,6 +40,9 @@ export const gamesRouter = createTRPCRouter({
 
       await ctx.db.insert(boards).values(BOARD_ARRAY)
 
+      // Update symbol the player
+      await ctx.db.update(user).set({ symbol: 'X' }).where(eq(user.id, userId))
+
       // Now add player info and create players table
       const player = {
         id: crypto.randomUUID(),
@@ -41,7 +51,7 @@ export const gamesRouter = createTRPCRouter({
         gameId: id,
         isOwner: true,
         isPlayerTurn: true,
-        userId: ctx.session.user.id,
+        userId,
       }
 
       await ctx.db.insert(gamePlayers).values(player)
@@ -52,7 +62,7 @@ export const gamesRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { roomId } = input
 
-      const game = await ctx.db.query.games.findFirst({
+      const findRoom = await ctx.db.query.games.findFirst({
         where: (game, { eq }) => eq(game.id, roomId),
         with: {
           boards: true,
@@ -61,11 +71,35 @@ export const gamesRouter = createTRPCRouter({
         },
       })
 
-      if (!game) {
-        return null
+      if (!findRoom) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Room not found!',
+        })
       }
 
-      return game
+      return findRoom
+    }),
+
+  startGame: protectedProcedure
+    .input(startGameSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { status, gameId } = input
+
+      if (!gameId) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Missing game id!',
+        })
+      }
+
+      const findGame = await ctx.db.query.games.findFirst({
+        where: (game, { eq }) => eq(game.id, gameId),
+      })
+
+      if (findGame) {
+        await ctx.db.update(games).set({ status }).where(eq(games.id, gameId))
+      }
     }),
 
   joinGame: protectedProcedure
@@ -107,6 +141,9 @@ export const gamesRouter = createTRPCRouter({
           message: 'You already joined this game!',
         })
       }
+
+      // Update symbol the player
+      await ctx.db.update(user).set({ symbol: 'O' }).where(eq(user.id, userId))
 
       if (findGame) {
         await ctx.db.insert(gamePlayers).values({

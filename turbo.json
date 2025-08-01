@@ -13,7 +13,8 @@
         "GITHUB_CLIENT_ID",
         "GITHUB_CLIENT_SECRET",
         "GOOGLE_CLIENT_ID",
-        "GOOGLE_CLIENT_SECRET"
+        "GOOGLE_CLIENT_SECRET",
+        "NEXT_PUBLIC_PROD_URL"
       ],
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
